@@ -1,0 +1,212 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Tascii Level Editor</title>
+	
+		<style> 
+			body { 
+				font-family: monospace;
+				font-size:12px; 
+			}
+			
+			.container { 
+				width:100%;
+				display:flex;
+			}
+			
+			.editor { 
+				display:flex;
+				width:90%;
+			}
+			
+			.left-panel { 
+				width:30%;
+				padding-left:10px;
+				padding-right:10px;
+			}
+			
+			.right-panel { 
+				width:70%;
+				display:flex;
+			}
+			.right-panel div { width:50%; }
+			.right-panel input { 
+				border:1px solid grey;
+				padding:0px;
+				width:12px;
+				height:12px;
+			}
+			#grid {
+				display: grid;
+				grid-template-columns: repeat(16, 16px);
+				grid-template-rows: repeat(16, 16px);
+				gap: 1px;
+				user-select: none;
+			}
+			.tile { 
+				cursor:pointer;
+			}
+			#output { 
+				width:100%;
+				height:500px;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+		<div class="container"> 
+			<div class="editor"> 
+				<div class="left-panel">
+					<b>Tascii Level Editor</b><br>
+					<br>
+					Tile to draw: <input type="text" id="tile" maxlength="1" style="width:20px;" value="#">
+					<hr>
+					
+					Level Format:<br>
+					Width: <input type="text" id="width" value="16"><br>
+					Height: <input type="text" id="height" value="16"><br>
+					Default Tile: <input type="text" id="default_tile" value="."><br>
+					<button id="btn_resize">Resize</button>
+					<hr>
+					
+					Output format:<br>
+					<textarea id="output_format">[i] = { m = "l" },</textarea>
+					<br>
+					<input type="checkbox" id="linebreak" checked>&nbsp;&nbsp;Add linebreak before Level
+					<br>
+					Map Index: <input type="text" id="map_index" style="width:20px;">
+					<hr>
+					
+					<b>Instructions:</b><br>
+					- use i for map_index<br>
+					- use l (lower-case l) to insert the level
+					<hr>
+					
+					<button id="btn_export">Export Layout</button>
+					<br><br>
+					<button id="btn_clear">Clear Layout</button>
+					<hr>
+
+					Developed by tibonev (<a href="https://classicgames.com.br/">classicgames.com.br</a>) in Feb. 2026
+					<br>
+					NO AI was used in the creation of this tool.<br>
+				</div>
+				
+				<div class="right-panel">
+					<div>
+						Layout:
+						<div id="grid"></div>
+					</div>
+					<div>
+						Output:
+						<textarea id="output"></textarea>
+						<button id="btn_copy">Click To Copy</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	
+	</body>
+</html>
+
+
+<script>
+	let width = document.getElementById("width").value;
+	let height = document.getElementById("height").value;
+	let default_tile = document.getElementById("default_tile").value;
+	let level = [];
+	let map_index = 1;
+	let output_format = document.getElementById("output_format").value;
+	let mouse_btn = false;
+	
+	document.addEventListener('mousedown', (event) => { if (event.button === 0) { mouse_btn = true; } });
+	document.addEventListener('mouseup', () => { mouse_btn = false; });
+
+	document.getElementById("btn_export").addEventListener("click", btn_export_click);
+	document.getElementById("btn_clear").addEventListener("click", btn_clear_click);
+	document.getElementById("btn_resize").addEventListener("click", btn_resize_click);
+	document.getElementById("btn_copy").addEventListener("click", btn_copy_click);
+	document.getElementById("map_index").value = map_index;
+	
+	document.addEventListener("keypress", key_pressed);
+
+	function init_grid() { 
+		for(y = 0; y < height; y++) { 
+			for(x = 0; x < width; x++) { 
+				tile = document.createElement("div");
+				tile.className = "tile"
+				tile.textContent = default_tile
+				tile.addEventListener("click", tile_click);
+				tile.addEventListener("mouseenter", tile_hover);
+				document.getElementById("grid").appendChild(tile)
+			}
+		}
+	}
+
+	function tile_click() {
+		this.textContent = document.getElementById("tile").value;
+	}
+
+	function tile_hover() { 
+		if(mouse_btn == true) { 
+			this.textContent = document.getElementById("tile").value;
+		}
+	}
+
+	function btn_export_click() { 
+		map_index = document.getElementById("map_index").value;
+		output_format = document.getElementById("output_format").value;
+		tiles = document.getElementsByClassName("tile");
+		level = "";
+		w = 1;
+		for(i = 0; i < tiles.length; i++) {
+			level = level + tiles[i].textContent;
+			w++;
+			if(w == 17) { 
+				level = level + "\n";
+				w = 1;
+			}
+		}
+		newstr = output_format.replace("i", map_index);
+		
+		if(document.getElementById("linebreak").checked == true) { 
+			newstr = newstr.replace("l", "\n" + level); 
+		} else { 
+			newstr = newstr.replace("l", level);
+		}
+		document.getElementById("output").textContent = newstr;
+		map_index++;
+		document.getElementById("map_index").value = map_index;
+	}
+
+	function btn_clear_click() { 
+		tiles = document.getElementsByClassName("tile");
+		for(i = 0; i < tiles.length; i++) {
+			tiles[i].textContent = ".";
+		}
+	}
+	
+	function btn_resize_click() { 
+		width = document.getElementById("width").value;
+		height = document.getElementById("height").value;
+		default_tile = document.getElementById("default_tile").value;
+
+		document.getElementById("grid").replaceChildren()
+		
+		init_grid()
+
+	}
+
+	async function btn_copy_click() { 
+		await navigator.clipboard.writeText(document.getElementById("output").value);
+        document.getElementById("btn_copy").innerHTML = "Click to Copy (Copied OK)";
+	}
+	
+	function key_pressed(event) {
+		key = String.fromCharCode(event.keyCode);
+		document.getElementById("tile").value = key; 
+	}
+
+	init_grid()
+</script>
