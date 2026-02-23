@@ -23,6 +23,8 @@ You can click/drag on the grid to draw a tile.
 - And to copy, you can simply click the button or select and copy the text in the output box.
 
 ## Releases 
+Version 2 (20260223):
+- Fixed issue #1 - double dollar sign rendering as a single dollar sign.
 
 Version 1 (20260220):
 - First Public Release

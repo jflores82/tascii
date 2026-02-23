@@ -171,9 +171,9 @@
 		newstr = output_format.replace("i", map_index);
 		
 		if(document.getElementById("linebreak").checked == true) { 
-			newstr = newstr.replace("l", "\n" + level); 
+			newstr = newstr.replace("l", () => "\n" + level); 
 		} else { 
-			newstr = newstr.replace("l", level);
+			newstr = newstr.replace("l", () => level);
 		}
 		document.getElementById("output").textContent = newstr;
 		map_index++;
