@@ -75,6 +75,8 @@
 					<br>
 					<input type="checkbox" id="linebreak" checked>&nbsp;&nbsp;Add linebreak before Level
 					<br>
+					<input type="checkbox" id="append" checked>&nbsp;&nbsp;Append level to the current output
+					<br>
 					Map Index: <input type="text" id="map_index" style="width:20px;">
 					<hr>
 					
@@ -86,9 +88,13 @@
 					<button id="btn_export">Export Layout</button>
 					<br><br>
 					<button id="btn_clear">Clear Layout</button>
+					<br><br>
+					<button id="btn_clr_output">Clear Output</button>
 					<hr>
 
-					Developed by tibonev (<a href="https://classicgames.com.br/">classicgames.com.br</a>) in Feb. 2026
+					Developed by tibonev (<a href="https://classicgames.com.br/">classicgames.com.br</a>)
+					<br>
+					Version 3 (20260224)
 					<br>
 					NO AI was used in the creation of this tool.<br>
 				</div>
@@ -119,6 +125,7 @@
 	let map_index = 1;
 	let output_format = document.getElementById("output_format").value;
 	let mouse_btn = false;
+	let output_text = "";
 	
 	document.addEventListener('mousedown', (event) => { if (event.button === 0) { mouse_btn = true; } });
 	document.addEventListener('mouseup', () => { mouse_btn = false; });
@@ -127,6 +134,7 @@
 	document.getElementById("btn_clear").addEventListener("click", btn_clear_click);
 	document.getElementById("btn_resize").addEventListener("click", btn_resize_click);
 	document.getElementById("btn_copy").addEventListener("click", btn_copy_click);
+	document.getElementById("btn_clr_output").addEventListener("click", btn_clr_output_click)
 	document.getElementById("map_index").value = map_index;
 	
 	document.addEventListener("keypress", key_pressed);
@@ -158,8 +166,8 @@
 		map_index = document.getElementById("map_index").value;
 		output_format = document.getElementById("output_format").value;
 		tiles = document.getElementsByClassName("tile");
-		level = "";
 		w = 1;
+		level = ""
 		for(i = 0; i < tiles.length; i++) {
 			level = level + tiles[i].textContent;
 			w++;
@@ -175,7 +183,13 @@
 		} else { 
 			newstr = newstr.replace("l", () => level);
 		}
-		document.getElementById("output").textContent = newstr;
+		
+		if(document.getElementById("append").checked == true) {
+			output_text = output_text + "\n" + newstr
+		} else { 
+			output_text = newstr
+		}
+		document.getElementById("output").textContent = output_text;
 		map_index++;
 		document.getElementById("map_index").value = map_index;
 	}
@@ -196,6 +210,10 @@
 		
 		init_grid()
 
+	}
+
+	function btn_clr_output_click() {
+		document.getElementById("output").textContent = "";
 	}
 
 	async function btn_copy_click() { 
