@@ -23,6 +23,9 @@ You can click/drag on the grid to draw a tile.
 - And to copy, you can simply click the button or select and copy the text in the output box.
 
 ## Releases 
+Version 4 (20260312):
+- Fixed bug with "Clear Layout" button not loading default tile.
+
 Version 3 (20260224):
 - Added option to append the level to the current output.
 

@@ -197,7 +197,7 @@
 	function btn_clear_click() { 
 		tiles = document.getElementsByClassName("tile");
 		for(i = 0; i < tiles.length; i++) {
-			tiles[i].textContent = ".";
+			tiles[i].textContent = document.getElementById("default_tile").value;
 		}
 	}
 	
