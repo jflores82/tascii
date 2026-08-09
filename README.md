@@ -23,6 +23,9 @@ You can click/drag on the grid to draw a tile.
 - And to copy, you can simply click the button or select and copy the text in the output box.
 
 ## Releases 
+Version 5 (20260808):
+- Fixed Bug when creating grids with a non-default width value.
+
 Version 4 (20260312):
 - Fixed bug with "Clear Layout" button not loading default tile.
 
